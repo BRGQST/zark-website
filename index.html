@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zark Incorporated – Custom Software Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #f4f6fb;
+    --navy-mid:   #ffffff;
+    --navy-light: #eaf0fa;
+    --accent:     #1a3fa8;
+    --accent-lt:  #2b55cc;
+    --gold:       #1a3fa8;
+    --gold-light: #2b55cc;
+    --yellow:     #1a3fa8;
+    --yellow-lt:  #2b55cc;
+    --green:      #1a7a4a;
+    --white:      #0f1a2e;
+    --muted:      #5a6a85;
+    --border:     rgba(26,63,168,0.15);
+    --border-dim: rgba(26,63,168,0.1);
+  }
+  .zark-wordmark { font-family:'Orbitron',monospace; font-weight:900; letter-spacing:0.1em; line-height:1; color:#1a4aaa; text-shadow:2px 2px 0 #8aacee; }
+  .zark-wordmark-nav { font-size:22px; }
+  .zark-wordmark-footer { font-size:16px; opacity:0.85; }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; font-weight:300; overflow-x:hidden; }
+
+  /* NAV */
+  nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 6%; height:68px; background:rgba(255,255,255,0.96); backdrop-filter:blur(16px); border-bottom:1px solid rgba(26,63,168,0.15); box-shadow: 0 1px 12px rgba(26,63,168,0.08); }
+  .nav-logo { cursor:pointer; display:flex; align-items:center; flex-shrink:0; }
+  .nav-links { display:flex; gap:2.5rem; list-style:none; }
+  .nav-links a { color:#5a6a85; text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; padding-bottom:3px; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color:#1a3fa8; }
+  .nav-links a.active { color:#1a3fa8; border-bottom-color:#1a3fa8; }
+
+  /* PAGES */
+  .page { display:none; padding-top:68px; min-height:100vh; }
+  .page.active { display:block; }
+
+  /* HERO */
+  .hero { position:relative; overflow:hidden; min-height:calc(100vh - 68px); display:flex; align-items:center; padding:5rem 6% 7rem; }
+  .hero-bg { position:absolute; inset:0; background: linear-gradient(135deg, #eef3fc 0%, #f8faff 55%, #dce8fa 100%); }
+  .hero-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(26,63,168,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(26,63,168,0.06) 1px, transparent 1px); background-size:56px 56px; }
+  .hero-glow { position:absolute; top:5%; right:0; width:55%; height:100%; background:linear-gradient(135deg, transparent 0%, rgba(26,63,168,0.07) 50%, rgba(26,63,168,0.14) 100%); pointer-events:none; clip-path:polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%); }
+  .hero-content { position:relative; z-index:2; max-width:660px; }
+
+  .eyebrow { display:inline-flex; align-items:center; gap:0.7rem; font-size:0.72rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#1a7a4a; margin-bottom:1.6rem; }
+  .eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--green); }
+
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.6rem,5.5vw,4.4rem); font-weight:700; line-height:1.1; letter-spacing:-0.01em; margin-bottom:1.4rem; color:#0f1a2e; }
+  .hero h1 em { font-style:normal; color:#1a3fa8; }
+  .hero-sub { font-size:1.05rem; line-height:1.8; color:#5a6a85; max-width:500px; margin-bottom:2.5rem; }
+  .hero-ctas { display:flex; gap:1rem; flex-wrap:wrap; }
+
+  .btn-primary { display:inline-flex; align-items:center; gap:0.5rem; background:#1a3fa8; color:#ffffff; padding:0.85rem 1.8rem; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; border:none; cursor:pointer; transition:background 0.2s, transform 0.15s; text-decoration:none; }
+  .btn-primary:hover { background:#2b55cc; transform:translateY(-2px); }
+  .btn-ghost { display:inline-flex; align-items:center; gap:0.5rem; background:transparent; color:#1a3fa8; padding:0.85rem 1.8rem; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; border:1px solid #1a3fa8; cursor:pointer; transition:border-color 0.2s, background 0.2s, color 0.2s; text-decoration:none; }
+  .btn-ghost:hover { background:rgba(26,63,168,0.06); }
+
+  .hero-stats { position:absolute; bottom:3.5rem; right:6%; display:flex; gap:3.5rem; z-index:2; align-items:center; }
+  .hero-stat-item { text-align:right; }
+  .hero-stat-item .stat-num { font-family:'Playfair Display',serif; font-size:2.6rem; font-weight:700; color:#1a3fa8; line-height:1; display:block; }
+  .hero-stat-item .stat-lbl { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:#5a6a85; margin-top:0.3rem; display:block; }
+  .hero-divider { width:1px; height:60px; background:rgba(26,63,168,0.2); }
+
+  /* CLIENTS TICKER */
+  .clients-band-wrapper {
+    background: #ffffff;
+    border-top: 1px solid rgba(26,63,168,0.15);
+    border-bottom: 1px solid rgba(26,63,168,0.15);
+    padding: 2rem 0 1.6rem;
+  }
+  .clients-band-label {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #1a7a4a;
+    margin-bottom: 1.2rem;
+  }
+  .clients-band { overflow:hidden; position:relative; }
+  .clients-band::before, .clients-band::after { content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2; pointer-events:none; }
+  .clients-band::before { left:0; background:linear-gradient(to right, #ffffff 10%, transparent); }
+  .clients-band::after { right:0; background:linear-gradient(to left, #ffffff 10%, transparent); }
+  .clients-track { display:flex; width:max-content; animation:ticker 36s linear infinite; }
+  .clients-track:hover { animation-play-state:paused; }
+  @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  .client-item { display:flex; align-items:center; padding:0 2rem; white-space:nowrap; gap:2rem; }
+  .client-item span { font-size:0.95rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:rgba(15,26,46,0.6); transition:color 0.25s; }
+  .client-item:hover span { color:#1a3fa8; }
+  .client-item .dot { width:4px; height:4px; border-radius:50%; background:rgba(26,63,168,0.25); flex-shrink:0; }
+
+  /* SECTIONS */
+  .section { padding:6rem 6%; }
+  .section-header { margin-bottom:3.5rem; }
+  .section-eyebrow { display:inline-flex; align-items:center; gap:0.7rem; font-size:0.72rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--green); margin-bottom:0.9rem; }
+  .section-eyebrow::before { content:''; display:block; width:22px; height:1px; background:var(--green); }
+  .section-header h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,2.8rem); font-weight:600; color:var(--white); line-height:1.2; }
+
+  /* PRODUCTS */
+  .products-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-dim); border:1px solid var(--border-dim); }
+  .product-card { background:var(--navy-mid); padding:2.8rem 2.4rem 3rem; position:relative; overflow:hidden; transition:background 0.25s; }
+  .product-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--green), var(--yellow)); transform:scaleX(0); transform-origin:left; transition:transform 0.35s; }
+  .product-card:hover { box-shadow:0 8px 32px rgba(26,63,168,0.12); transform:translateY(-2px); }
+  .product-card:hover::after { transform:scaleX(1); }
+  .product-tag { display:inline-block; font-size:0.65rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--green); margin-bottom:1.6rem; opacity:0.85; }
+  .product-card h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:600; color:var(--white); margin-bottom:0.9rem; line-height:1.3; }
+  .product-card p { font-size:0.92rem; line-height:1.75; color:var(--muted); }
+
+  /* PARTNERS PAGE */
+  .partners-section { padding: 4rem 5%; background: #f4f6fb; }
+  .partners-intro { max-width: 600px; margin-bottom: 3.5rem; }
+  .partners-intro p { color: #5a6a85; font-size: 1.05rem; line-height: 1.75; }
+  .partners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+  .partner-card {
+    background: #ffffff;
+    border: 1px solid rgba(26,63,168,0.12);
+    display: flex; flex-direction: column;
+    transition: border-color 0.25s, background 0.25s, transform 0.2s;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .partner-card:hover {
+    border-color: #1a3fa8;
+    background: #f4f6fb;
+    transform: translateY(-3px);
+  }
+  .partner-logo-area {
+    background: #f4f6fb;
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(26,63,168,0.08);
+  }
+  .partner-logo-area span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .partner-body { padding: 1.5rem 1.5rem 1rem; flex: 1; display: flex; flex-direction: column; }
+  .partner-body h3 { font-size: 1.05rem; font-weight: 600; color: #0f1a2e; margin-bottom: 0.6rem; }
+  .partner-body p { font-size: 0.88rem; line-height: 1.65; color: #5a6a85; flex: 1; }
+  .partner-arrow {
+    display: flex; justify-content: flex-end;
+    padding: 0.8rem 1.5rem 1.2rem;
+    color: #1a3fa8;
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .partner-card:hover .partner-arrow { opacity: 1; }
+  .partners-divider { border: none; border-top: 1px solid rgba(26,63,168,0.12); margin: 3rem 0; }
+
+  /* ABOUT */
+  .about-hero { padding:5.5rem 6% 3.5rem; border-bottom:1px solid rgba(26,63,168,0.12); position:relative; overflow:hidden; background:#f4f6fb; }
+  .about-hero-bg { position:absolute; inset:0; background:linear-gradient(135deg, #eef3fc 0%, #dce8fa 100%); }
+  .about-hero-content { position:relative; z-index:1; }
+  .about-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,4vw,3.4rem); font-weight:700; line-height:1.15; max-width:680px; color:#0f1a2e; }
+  .about-hero h1 em { font-style:normal; color:#1a3fa8; }
+  .about-hero > .about-hero-content > p { margin-top:1.2rem; font-size:1.05rem; line-height:1.8; color:#5a6a85; max-width:560px; }
+
+  .about-body { display:grid; grid-template-columns:1.1fr 0.9fr; gap:5rem; padding:5rem 6%; align-items:start; background:#ffffff; }
+  .about-text p { font-size:1.02rem; line-height:1.9; color:var(--muted); margin-bottom:1.4rem; }
+  .about-text p strong { color:var(--white); font-weight:500; }
+  .about-sidebar h3 { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--white); margin-bottom:1.4rem; }
+  .expertise-list { list-style:none; display:flex; flex-direction:column; }
+  .expertise-list li { display:flex; align-items:center; gap:0.8rem; font-size:0.92rem; color:var(--muted); padding:0.9rem 0; border-bottom:1px solid var(--border-dim); }
+  .expertise-list li::before { content:'▸'; color:var(--yellow); font-size:0.7rem; flex-shrink:0; }
+
+  .about-stats { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border-dim); border:1px solid var(--border-dim); margin-top:2.5rem; }
+  .about-stat-box { background:var(--navy-mid); padding:2rem 1.8rem; }
+  .about-stat-box .big { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:var(--yellow); display:block; }
+  .about-stat-box .lbl { font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:0.3rem; display:block; }
+
+  .cta-band { margin:0 6% 5rem; padding:3rem 3.5rem; background:var(--navy-light); border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:2rem; }
+  .cta-band h3 { font-family:'Playfair Display',serif; font-size:1.5rem; margin-bottom:0.4rem; }
+  .cta-band p { color:var(--muted); font-size:0.92rem; }
+
+  /* CONTACT */
+  .contact-layout { display:grid; grid-template-columns:1fr 1.3fr; min-height:calc(100vh - 68px); }
+  .contact-sidebar { background:#f4f6fb; padding:5rem 4rem; border-right:1px solid rgba(26,63,168,0.12); display:flex; flex-direction:column; justify-content:space-between; }
+  .contact-sidebar h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:700; line-height:1.2; margin-bottom:1.2rem; color:#0f1a2e; }
+  .contact-sidebar h1 em { font-style:normal; color:#1a3fa8; }
+  .contact-sidebar > div > p { color:#5a6a85; line-height:1.8; font-size:0.98rem; margin-bottom:3rem; }
+  .contact-detail { display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.8rem; }
+  .contact-icon { width:38px; height:38px; flex-shrink:0; background:rgba(26,63,168,0.08); border:1px solid rgba(26,63,168,0.18); display:flex; align-items:center; justify-content:center; font-size:0.9rem; color:#1a3fa8; }
+  .contact-detail .lbl { font-size:0.68rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#1a7a4a; display:block; margin-bottom:0.2rem; }
+  .contact-detail .val { font-size:0.92rem; color:#0f1a2e; }
+  .contact-sidebar-footer { margin-top:auto; padding-top:3rem; border-top:1px solid rgba(26,63,168,0.12); }
+  .contact-sidebar-footer p { font-size:0.78rem; color:#5a6a85; opacity:0.7; }
+  .contact-form-area { padding:5rem 4.5rem; background:#ffffff; }
+  .contact-form-area h2 { font-family:'Playfair Display',serif; font-size:1.5rem; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(26,63,168,0.12); color:#0f1a2e; }
+  .form-group { margin-bottom:1.4rem; }
+  .form-group label { display:block; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#5a6a85; margin-bottom:0.45rem; }
+  .form-group input, .form-group textarea, .form-group select { width:100%; background:#f4f6fb; border:1px solid rgba(26,63,168,0.15); border-bottom:2px solid rgba(26,63,168,0.2); color:#0f1a2e; padding:0.85rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.92rem; font-weight:300; outline:none; transition:border-color 0.2s, background 0.2s; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-bottom-color:#1a3fa8; background:#ffffff; }
+  .form-group textarea { resize:vertical; min-height:130px; }
+  .form-group select option { background:#ffffff; color:#0f1a2e; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .form-submit { margin-top:2rem; }
+  .success-msg { display:none; background:rgba(26,63,168,0.06); border:1px solid #1a3fa8; color:#1a3fa8; padding:1rem 1.5rem; font-size:0.88rem; margin-top:1rem; }
+
+  /* FOOTER */
+  footer { background:#0f1a2e; border-top:none; padding:2rem 6%; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  footer p { font-size:0.78rem; color:rgba(255,255,255,0.45); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .page.active .hero-content { animation:fadeUp 0.55s ease both; }
+  .page.active .clients-band-wrapper { animation:fadeUp 0.55s 0.1s ease both; }
+  .page.active .section { animation:fadeUp 0.55s 0.15s ease both; }
+  .page.active .about-hero-content { animation:fadeUp 0.55s ease both; }
+  .page.active .about-body { animation:fadeUp 0.55s 0.15s ease both; }
+
+  /* RESPONSIVE */
+  @media (max-width:900px) {
+    .products-grid { grid-template-columns:1fr; }
+    .about-body { grid-template-columns:1fr; gap:3rem; }
+    .contact-layout { grid-template-columns:1fr; }
+    .contact-sidebar { padding:3rem 5%; }
+    .contact-form-area { padding:3rem 5%; }
+    .cta-band { flex-direction:column; align-items:flex-start; }
+  }
+  @media (max-width:640px) {
+    nav { padding:0 5%; }
+    .hero { padding:4rem 5% 5rem; }
+    .hero-stats { display:none; }
+    .section { padding:4rem 5%; }
+    .form-row { grid-template-columns:1fr; }
+    .about-body { padding:4rem 5%; }
+    .clients-section { padding:3rem 5%; }
+    .nav-links { gap:1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" data-page="home" style="cursor:pointer;"><span class="zark-wordmark zark-wordmark-nav">ZARK</span></a>
+  <ul class="nav-links">
+    <li><a id="nav-home"    data-page="home"    class="active">Home</a></li>
+    <li><a id="nav-about"   data-page="about">About</a></li>
+    <li><a id="nav-clients" data-page="clients">Partners</a></li>
+    <li><a id="nav-contact" data-page="contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="eyebrow">Est. 1983</div>
+      <h1>Software built for<br><em>mission-critical</em><br>financial operations.</h1>
+      <p class="hero-sub">Zark Incorporated delivers precision-engineered software for the insurance and finance industries — trusted by leading institutions for over four decades.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" data-page="contact">Get in Touch</button>
+        <button class="btn-ghost" data-page="about">Our Story &rarr;</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat-item">
+        <span class="stat-num">40+</span>
+        <span class="stat-lbl">Years Operating</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-lbl">Flagship Products</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">Flagship Products</div>
+      <h2>Purpose-built software<br>for specialized industries.</h2>
+    </div>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-tag">01 &middot; Investment Management</div>
+        <h3>Variable Product Administration</h3>
+        <p>The leading software platform for managing and reporting on variable product investments. Built for precision in complex, high-stakes financial environments where accuracy is non-negotiable.</p>
+      </div>
+      <div class="product-card">
+        <div class="product-tag">02 &middot; Life Plan Communities</div>
+        <h3>LifeCalc Pro</h3>
+        <p>An entry fee amortization software product designed specifically for the Life Plan Community industry, developed in partnership with Continuing Care Actuaries of Maryland.</p>
+      </div>
+      <div class="product-card">
+        <div class="product-tag">03 &middot; Financial Underwriting</div>
+        <h3>Examiner Pro</h3>
+        <p>A comprehensive financial underwriting software product for the Life Plan Community industry, also developed in partnership with CCA. Trusted by underwriters nationwide.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="zark-wordmark zark-wordmark-footer">ZARK</span>
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Zark Incorporated &mdash; All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="about-hero-bg"></div>
+    <div class="about-hero-content">
+      <div class="eyebrow">Our Story</div>
+      <h1>Four decades of <em>engineering</em><br>meets deep industry knowledge.</h1>
+      <p>Since 1983, we've built and maintained software that financial institutions depend on every day &mdash; with the same team, the same values, and an uncompromising focus on accuracy.</p>
+    </div>
+  </div>
+  <div class="about-body">
+    <div class="about-text">
+      <p>Since <strong>1983</strong>, Zark Incorporated has been leading the way in custom software solutions for the insurance and finance industries. Our experienced team brings together engineering, business, and actuarial expertise to develop software that is flexible, efficient, and reliable.</p>
+      <p>At Zark, we understand that <strong>smooth operations are crucial</strong> when managing critical information &mdash; especially in rapidly changing regulatory and market environments. Whether you need a system built from the ground up or a modernized version of your existing platform, we have the depth of experience to get it right.</p>
+      <p>Our products are trusted by professionals who require <strong>accuracy above all else</strong>. Every solution we deliver reflects decades of refinement and deep domain knowledge that off-the-shelf software simply cannot replicate.</p>
+      <div class="about-stats">
+        <div class="about-stat-box"><span class="big">1983</span><span class="lbl">Year Founded</span></div>
+        <div class="about-stat-box"><span class="big">40+</span><span class="lbl">Years Operating</span></div>
+        <div class="about-stat-box"><span class="big">3</span><span class="lbl">Flagship Products</span></div>
+        <div class="about-stat-box"><span class="big">2</span><span class="lbl">Industry Verticals</span></div>
+      </div>
+    </div>
+    <div class="about-sidebar">
+      <h3>Areas of Expertise</h3>
+      <ul class="expertise-list">
+        <li>Variable product investment management</li>
+        <li>Life Plan Community financial software</li>
+        <li>Actuarial and financial underwriting tools</li>
+        <li>Entry fee amortization and reporting</li>
+        <li>Custom enterprise software development</li>
+        <li>Legacy system modernization</li>
+        <li>Long-term client support &amp; maintenance</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cta-band">
+    <div><h3>Ready to modernize your system?</h3><p>Whether it's a custom build or an upgrade to what you already have, let's talk.</p></div>
+    <button class="btn-primary" data-page="contact" style="background:#ffffff;color:#1a3fa8;">Contact Us</button>
+  </div>
+  <footer>
+    <span class="zark-wordmark zark-wordmark-footer">ZARK</span>
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Zark Incorporated &mdash; All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- CLIENTS -->
+<div id="page-clients" class="page">
+  <div class="about-hero">
+    <div class="about-hero-bg"></div>
+    <div class="about-hero-content">
+      <div class="eyebrow">Partners</div>
+      <h1>Organizations that trust <em>Zark</em><br>to power their operations.</h1>
+      <p>For over four decades, leading insurance and financial institutions have relied on our software for mission-critical operations.</p>
+    </div>
+  </div>
+
+  <div class="partners-section">
+    <div class="section-eyebrow">VPA Partners</div>
+    <div class="partners-intro"><p>Variable product administration software trusted by the nation's leading life insurance carriers.</p></div>
+    <div class="partners-grid">
+    <div class="partner-card">
+      <div class="partner-logo-area" style="background:#fff;">
+        <img src="https://www.johnhancock.com/content/dam/onejohnhancock/images/homepage/JohnHancock_rgb.svg" alt="John Hancock" style="max-height:70px;max-width:90%;object-fit:contain;">
+      </div>
+      <div class="partner-body">
+        <h3>John Hancock</h3>
+        <p>A leading insurance and financial services company providing life insurance, retirement, and wealth management solutions across North America.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Nationwide</span></div>
+      <div class="partner-body">
+        <h3>Nationwide</h3>
+        <p>One of the largest insurance and financial services companies in the U.S., offering a broad range of products and services.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Transamerica</span></div>
+      <div class="partner-body">
+        <h3>Transamerica</h3>
+        <p>A leading provider of life insurance, investment, and retirement solutions for millions of customers.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Sun Life</span></div>
+      <div class="partner-body">
+        <h3>Sun Life</h3>
+        <p>A leading international financial services organization providing insurance, wealth, and asset management solutions.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Lincoln Financial</span></div>
+      <div class="partner-body">
+        <h3>Lincoln Financial</h3>
+        <p>Provides advice and solutions that help people take charge of their financial lives through insurance and retirement planning.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Ameritas</span></div>
+      <div class="partner-body">
+        <h3>Ameritas</h3>
+        <p>A mutual-based financial services company offering life insurance, annuities, and retirement plans.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Securian Financial</span></div>
+      <div class="partner-body">
+        <h3>Securian Financial</h3>
+        <p>One of the nation's largest mutual financial services companies, offering insurance and financial products.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Western & Southern</span></div>
+      <div class="partner-body">
+        <h3>Western & Southern</h3>
+        <p>A Cincinnati-based financial services company offering life insurance, annuities, and investment products.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Penn Mutual</span></div>
+      <div class="partner-body">
+        <h3>Penn Mutual</h3>
+        <p>A mutual life insurance company providing financial security through life insurance and annuity products since 1847.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Midland National</span></div>
+      <div class="partner-body">
+        <h3>Midland National</h3>
+        <p>A leading life insurance company focused on providing quality products and financial security to policyholders.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    </div>
+
+    <hr class="partners-divider">
+
+    <div class="section-eyebrow">LifeCalc Pro &amp; Examiner Pro Partners</div>
+    <div class="partners-intro"><p>Financial underwriting and entry fee amortization software developed in partnership with Continuing Care Actuaries of Maryland (CCA).</p></div>
+    <div class="partners-grid">
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Erickson Senior Living</span></div>
+      <div class="partner-body">
+        <h3>Erickson Senior Living</h3>
+        <p>One of the nation's largest developers and managers of continuing care retirement communities.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Vi Living</span></div>
+      <div class="partner-body">
+        <h3>Vi Living</h3>
+        <p>Operator of luxury senior living communities offering independent living, assisted living, and skilled nursing care.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Covenant Living</span></div>
+      <div class="partner-body">
+        <h3>Covenant Living</h3>
+        <p>A nonprofit organization operating senior living communities across the U.S. with a mission-driven approach.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Acts Retirement-Life</span></div>
+      <div class="partner-body">
+        <h3>Acts Retirement-Life</h3>
+        <p>The largest nonprofit owner, operator, and developer of continuing care retirement communities in the U.S.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Sunrise Senior Living</span></div>
+      <div class="partner-body">
+        <h3>Sunrise Senior Living</h3>
+        <p>A leading provider of personalized senior living services across the U.S., Canada, and the U.K.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    <div class="partner-card">
+      <div class="partner-logo-area"><span>Senior Living Communities</span></div>
+      <div class="partner-body">
+        <h3>Senior Living Communities</h3>
+        <p>Operator of premier retirement communities offering independent and assisted living options.</p>
+      </div>
+      <div class="partner-arrow">&#8594;</div>
+    </div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <div><h3>Want to join this list?</h3><p>Reach out to learn how Zark can support your operations.</p></div>
+    <button class="btn-primary" data-page="contact" style="background:#ffffff;color:#1a3fa8;">Get in Touch</button>
+  </div>
+  <footer>
+    <span class="zark-wordmark zark-wordmark-footer">ZARK</span>
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Zark Incorporated &mdash; All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="contact-layout">
+    <div class="contact-sidebar">
+      <div>
+        <div class="eyebrow">Contact</div>
+        <h1>Let's start a<br><em>conversation.</em></h1>
+        <p>Tell us about your project or current system. We'll follow up promptly to discuss how Zark can help.</p>
+        <div class="contact-detail">
+          <div class="contact-icon">&#9993;</div>
+          <div><span class="lbl">Email</span><span class="val">support@zarkapl.com</span></div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">&#9678;</div>
+          <div><span class="lbl">Specialty</span><span class="val">Insurance &amp; Finance Software</span></div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">&#9650;</div>
+          <div><span class="lbl">Founded</span><span class="val">1983 &mdash; 40+ years of experience</span></div>
+        </div>
+      </div>
+      <div class="contact-sidebar-footer">
+        <p>Zark Incorporated &middot; All communications are confidential.</p>
+      </div>
+    </div>
+    <div class="contact-form-area">
+      <h2>Send Us a Message</h2>
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" name="firstName" placeholder="Jane" required></div>
+          <div class="form-group"><label>Last Name</label><input type="text" name="lastName" placeholder="Smith" required></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" name="email" placeholder="jane@yourcompany.com" required></div>
+        <div class="form-group"><label>Company</label><input type="text" name="company" placeholder="Your organization"></div>
+        <div class="form-group">
+          <label>Area of Interest</label>
+          <select name="interest">
+            <option value="">Select a product or service</option>
+            <option value="vpa">Variable Product Administration</option>
+            <option value="lifecalc">LifeCalc Pro</option>
+            <option value="examiner">Examiner Pro</option>
+            <option value="custom">Custom Software Development</option>
+            <option value="modernization">System Modernization</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell us about your needs or questions&hellip;" required></textarea></div>
+        <div class="form-submit">
+          <button type="submit" class="btn-primary">Send Message &rarr;</button>
+          <div class="success-msg" id="successMsg">&#10003; Thank you &mdash; we'll be in touch shortly.</div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <footer>
+    <span class="zark-wordmark zark-wordmark-footer">ZARK</span>
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Zark Incorporated &mdash; All Rights Reserved.</p>
+  </footer>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+      var page = document.getElementById('page-' + id);
+      if (page) page.classList.add('active');
+      var nav = document.getElementById('nav-' + id);
+      if (nav) nav.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('[data-page]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage(el.getAttribute('data-page'));
+      });
+    });
+    var form = document.getElementById('contactForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('successMsg').style.display = 'block';
+        form.reset();
+      });
+    }
+  });
+</script>
+</body>
+</html>
