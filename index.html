@@ -508,22 +508,11 @@
       <h2>Send Us a Message</h2>
       <form id="contactForm" action="https://formspree.io/f/xqeyzjkd" method="POST">
         <div class="form-row">
-          <div class="form-group"><label>First Name</label><input type="text" name="firstName" placeholder="Jane" required></div>
-          <div class="form-group"><label>Last Name</label><input type="text" name="lastName" placeholder="Smith" required></div>
+          <div class="form-group"><label>First Name</label><input type="text" name="firstName" required></div>
+          <div class="form-group"><label>Last Name</label><input type="text" name="lastName" required></div>
         </div>
-        <div class="form-group"><label>Email Address</label><input type="email" name="email" placeholder="jane@yourcompany.com" required></div>
-        <div class="form-group"><label>Company</label><input type="text" name="company" placeholder="Your organization"></div>
-        <div class="form-group">
-          <label>Area of Interest</label>
-          <select name="interest">
-            <option value="">Select a product or service</option>
-            <option value="custom">Custom Software Development</option>
-            <option value="examiner">Examiner Pro</option>
-            <option value="lifecalc">LifeCalc Pro</option>
-            <option value="modernization">System Modernization</option>
-            <option value="vpa">Variable Product Administration</option>
-          </select>
-        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" name="email" required></div>
+        <div class="form-group"><label>Company</label><input type="text" name="company" required></div>
         <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell us about your needs or questions&hellip;" required></textarea></div>
         <div class="form-submit">
           <button type="submit" class="btn-primary">Send Message &rarr;</button>
